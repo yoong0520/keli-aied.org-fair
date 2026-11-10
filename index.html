@@ -248,7 +248,7 @@ h1 em{font-style:normal;background:linear-gradient(90deg,var(--blue),var(--mint)
               <li>수집 항목: 학번</li>
               <li>이용 목적: 체험 참여 확인, 상품 지급(중복 수령 방지), 참여 통계</li>
               <li>보유 기간: <span id="keepTxt">행사 종료 후 1개월 이내 파기</span></li>
-              <li>동의하지 않으셔도 체험은 할 수 있으며, 이 경우 상품 지급이 제한될 수 있어요.</li>
+              <li>동의를 거부하실 수 있으며, 거부하시면 체험 참여와 상품 지급이 어려워요.</li>
             </ul>
             <label class="chk"><input type="checkbox" id="agree"> 위 내용에 동의합니다</label>
           </div>
@@ -257,7 +257,6 @@ h1 em{font-style:normal;background:linear-gradient(90deg,var(--blue),var(--mint)
           <div class="pad" id="pad"></div>
           <div class="idbtns">
             <button class="btn" id="idGo" type="button" disabled>동의하고 시작하기</button>
-            <button class="skip" id="idSkip" type="button">학번 없이 체험만 할게요</button>
           </div>
         </div>
       </div>
@@ -595,7 +594,6 @@ $("agree").onchange=()=>{Snd.fx("tap");paintId();};
 function openId(){ sid=""; consent=false; $("agree").checked=false; paintId(); show("id"); }
 function beginQuiz(){ step=0; answers=[]; t0=Date.now(); show("quiz"); renderQ(); }
 $("idGo").onclick=()=>{ if(!validId()||!$("agree").checked) return; consent=true; Snd.fx("start"); beginQuiz(); };
-$("idSkip").onclick=()=>{ sid=""; consent=false; Snd.fx("tap"); beginQuiz(); };
 
 function renderQ(){
   const Q=QS[step];
