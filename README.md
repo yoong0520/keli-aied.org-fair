@@ -17,8 +17,8 @@
 3. 운영 도구(왼쪽 위 KELI 로고 5번 빠르게 터치)에서 전송 현황 확인, 즉시 전송, CSV 내려받기를 할 수 있다.
 
 ## 구글 시트 연결(최초 1회)
-1. 참여기록 시트 열기 → 확장 프로그램 → Apps Script
-2. `apps-script/Code.gs` 내용을 붙여넣고 저장
+1. Apps Script 열기: https://script.new (또는 참여기록 시트 → 확장 프로그램 → Apps Script)
+2. `apps-script/Code.gs` 내용을 붙여넣고 저장. script.new로 만들었다면 코드의 `SHEET_ID`에 참여기록 시트 ID를 넣는다
 3. 배포 → 새 배포 → 유형: 웹 앱 → 실행 사용자: 나 / 액세스 권한: 모든 사용자 → 배포 → 권한 승인
 4. 웹 앱 URL(`https://script.google.com/macros/s/…/exec`) 복사
 5. 부스 기기에서 게임 열기 → KELI 로고 5번 터치 → 주소 입력 → "주소 저장·연결 확인"

@@ -1,10 +1,12 @@
 /**
  * KELI 2026 전공박람회 「나에게 딱 맞는 한림 AI 찾기」 참여기록 수신용 Apps Script
- * 사용법: 참여기록 시트 → 확장 프로그램 → Apps Script → 이 코드를 붙여넣기 → 배포 → 새 배포 → 웹 앱
+ * Apps Script 만들기: https://script.new  (또는 참여기록 시트 → 확장 프로그램 → Apps Script)
+ * 사용법: 이 코드를 붙여넣기 → 저장 → 배포 → 새 배포 → 웹 앱
  *         (실행 사용자: 나 / 액세스 권한: 모든 사용자) → 배포된 웹 앱 URL(…/exec)을 게임 운영 도구에 입력
  * 게임 HTML의 SYNC_KEY 값과 아래 KEY 값이 같아야 기록이 저장된다.
  */
 const KEY = 'keli-c1697a0b0b4692ec';
+const SHEET_ID = '';   // 참여기록 시트 ID (비워 두면 이 스크립트가 붙은 시트를 사용)
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -12,7 +14,7 @@ function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents || '{}');
     if (body.key !== KEY) return out_({ ok: false, error: 'invalid key' });
-    const sh = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+    const sh = (SHEET_ID ? SpreadsheetApp.openById(SHEET_ID) : SpreadsheetApp.getActiveSpreadsheet()).getSheets()[0];
     const last = sh.getLastRow();
     const seen = new Set(last > 1 ? sh.getRange(2, 1, last - 1, 1).getValues().flat().map(String) : []);
     const rows = [], ids = [];
