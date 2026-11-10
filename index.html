@@ -453,7 +453,7 @@ let sid='', consent=false, t0=0;
 /* ===== Sound: original BGM + SFX synthesized with Web Audio (no external files) ===== */
 const Snd=(()=>{
   let ctx=null, master, bgmG, sfxG, timer=null, on=true, playing=false, nextT=0, idx=0;
-  try{ on = localStorage.getItem('keli_fair_sound')!=='off'; }catch(e){}
+  // 페이지를 열 때마다 소리는 항상 켜진 상태로 시작
   const BPM=112, E=60/BPM/2;                     // eighth-note length
   const N=n=>440*Math.pow(2,(n-69)/12);
   const M={C4:60,D4:62,E4:64,F4:65,G4:67,A4:69,B4:71,C5:72,D5:74,E5:76,F5:77,G5:79,A5:81,B5:83,C6:84,D6:86,E6:88,G6:91,A6:93,C7:96,
@@ -556,7 +556,8 @@ const Snd=(()=>{
     unlock,
     fx(name){ if(!on||!ctx) return; try{ S[name](); }catch(e){} },
     get on(){return on},
-    toggle(){ on=!on; try{localStorage.setItem('keli_fair_sound',on?'on':'off')}catch(e){}
+    get state(){return ctx?ctx.state:'none'},
+    toggle(){ on=!on;
       if(init()){ if(ctx.state==='suspended') ctx.resume(); master.gain.setTargetAtTime(on?1:0,ctx.currentTime,0.05); startBgm(); } return on; }
   };
 })();
@@ -564,6 +565,10 @@ const SPK_ON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 const SPK_OFF='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m22 9-6 6M16 9l6 6"/></svg>';
 function paintSnd(){ const b=$("sndBtn"); b.innerHTML=(Snd.on?SPK_ON:SPK_OFF)+(Snd.on?'소리 켬':'소리 끔'); b.classList.toggle('off',!Snd.on); b.setAttribute('aria-pressed',String(Snd.on)); }
 document.addEventListener('pointerdown',()=>Snd.unlock(),{capture:true});
+document.addEventListener('touchstart',()=>Snd.unlock(),{capture:true,passive:true});
+// 화면을 열자마자 자동 재생 시도(브라우저가 허용하면 바로 음악 시작, 막히면 첫 터치에 시작)
+window.addEventListener('load',()=>{ Snd.unlock(); setTimeout(()=>Snd.unlock(),800); });
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) Snd.unlock(); });
 document.addEventListener('keydown',()=>Snd.unlock(),{capture:true});
 
 let step=0, answers=[], idleTimer=null, autoTimer=null, locked=false;
