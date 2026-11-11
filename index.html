@@ -141,7 +141,7 @@ h1 em{font-style:normal;background:linear-gradient(90deg,var(--blue),var(--mint)
 .rtop{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px}
 .rlabel{font-size:clamp(14px,1.9vh,18px);color:var(--sub);font-weight:700}
 .rtype{position:relative;display:inline-block;white-space:nowrap;font-weight:900;font-size:clamp(28px,min(5.6vh,6vw),54px);color:var(--navy);margin:6px 0 6px;letter-spacing:-.02em;line-height:1.2;
-  background:linear-gradient(transparent 58%, color-mix(in srgb, var(--acc,#0055C8) 28%, transparent) 58%, color-mix(in srgb, var(--acc,#0055C8) 28%, transparent) 92%, transparent 92%);
+  background:linear-gradient(transparent 58%, var(--acc-soft,rgba(0,85,200,.28)) 58%, var(--acc-soft,rgba(0,85,200,.28)) 92%, transparent 92%);
   padding:0 6px;animation:typePop .7s .15s cubic-bezier(.2,1.4,.4,1) both}
 @keyframes typePop{from{opacity:0;transform:scale(.6) rotate(-3deg)}to{opacity:1;transform:none}}
 .rtype:before,.rtype:after{content:"✦";position:absolute;color:var(--acc,#0055C8);font-size:.42em;animation:twinkle 1.4s ease-in-out infinite}
@@ -157,7 +157,7 @@ h1 em{font-style:normal;background:linear-gradient(90deg,var(--blue),var(--mint)
 .svc .name{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .svc .pick{font-size:13px;font-weight:900;letter-spacing:.12em;color:var(--acc,#0055C8);background:#fff;border:2px solid var(--acc,#0055C8);border-radius:99px;padding:4px 10px}
 .svc .svname{font-weight:900;font-size:clamp(26px,4.2vh,38px);color:#fff;padding:6px 20px;border-radius:16px;
-  background:linear-gradient(135deg,var(--acc,#0055C8),color-mix(in srgb, var(--acc,#0055C8) 55%, #7FD8FF));box-shadow:0 12px 24px -12px var(--acc,#0055C8);
+  background:linear-gradient(135deg,var(--acc,#0055C8),var(--acc-light,#4C8FE0));box-shadow:0 12px 24px -12px var(--acc,#0055C8);
   animation:namePop .6s .45s cubic-bezier(.2,1.4,.4,1) both}
 @keyframes namePop{from{opacity:0;transform:translateY(12px) scale(.8)}to{opacity:1;transform:none}}
 .svc{border-left:6px solid var(--acc,#0055C8)}
@@ -725,7 +725,9 @@ function finish(){
 }
 function showResult(k,k2){
   const T=TYPES[k];
-  $("s-result").style.setProperty("--acc",T.color); $("rType").textContent=T.type; $("rCatch").textContent=T.catch;
+  (()=>{const s=$("s-result").style, hx=T.color.replace('#',''), r=parseInt(hx.slice(0,2),16), g=parseInt(hx.slice(2,4),16), b=parseInt(hx.slice(4,6),16);
+  const mix=(c,d)=>Math.round(c*.55+d*.45); s.setProperty("--acc",T.color); s.setProperty("--acc-soft",`rgba(${r},${g},${b},.28)`);
+  s.setProperty("--acc-light",`rgb(${mix(r,127)},${mix(g,216)},${mix(b,255)})`);})(); $("rType").textContent=T.type; $("rCatch").textContent=T.catch;
   $("rImg").src=IMG[T.img]; $("rImg").alt=(T.img==="eum"?"이음이":"이루미")+"가 추천하는 "+T.name;
   $("rIcon").innerHTML=svg(T.icon,T.color);
   $("rName").textContent=T.name; $("rOne").textContent=T.one; $("rDesc").textContent=T.desc; $("rTry").textContent=T.try;
