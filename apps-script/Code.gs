@@ -18,7 +18,9 @@ function doPost(e) {
     const last = sh.getLastRow();
     const seen = new Set(last > 1 ? sh.getRange(2, 1, last - 1, 1).getValues().flat().map(String) : []);
     const rows = [], ids = [];
-    (body.records || []).forEach(function (r) {
+    const recs = (body.records || []).slice(0, 50);              // 한 번에 최대 50건
+    recs.forEach(function (r) {
+      if (!valid_(r)) return;                                     // 형식이 맞지 않는 데이터는 저장하지 않음
       ids.push(r.id);
       if (seen.has(String(r.id))) return;           // 같은 기록이 다시 와도 한 번만 저장
       seen.add(String(r.id));
@@ -34,6 +36,19 @@ function doPost(e) {
   } finally {
     lock.releaseLock();
   }
+}
+
+const RESULTS = ['HAI-Tutor','HAI-GPT','HAI-Way','HAI-PBL','HAI-Forum','HAI-MathTutor','HAI-Coder','HAI-BDPI','HAI-Sync'];
+function valid_(r) {
+  if (!r || typeof r !== 'object') return false;
+  if (!/^T[A-Z0-9]{5}-[a-z0-9]{6,12}$/.test(String(r.id))) return false;       // 게임이 만드는 기록ID 형식
+  if (r.sid && !/^\d{7,10}$/.test(String(r.sid))) return false;                  // 학번 7~10자리 숫자
+  if (RESULTS.indexOf(r.result) < 0 || RESULTS.indexOf(r.second) < 0) return false;
+  if (!/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(String(r.time))) return false;
+  if (!Array.isArray(r.answers) || r.answers.length !== 5 || r.answers.some(function (x) { return String(x).length > 60; })) return false;
+  if (typeof r.secs !== 'number' || r.secs < 0 || r.secs > 3600) return false;
+  if (String(r.type || '').length > 20 || !/^T[A-Z0-9]{5}$/.test(String(r.device))) return false;
+  return true;
 }
 
 function doGet() {
